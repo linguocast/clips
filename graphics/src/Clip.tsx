@@ -166,8 +166,8 @@ const Clip = () => {
         <div className='absolute left-0 right-0 top-0 bottom-0 z-20 p-[4vw] flex flex-col justify-end items-start pb-[26vw]'>
           <div className='mb-[4vw] font-bold leading-snug text-white w-full'>
             {currentSegment?.tokens.map(({ start, token, pronunciation }) => (
-              <div style={{ padding: `${LANGUAGE === 'chinese' ? '2' : '1.2'}vw` }} className={`inline-block flex-col items-center leading-tight text-center ` + (start < currentTime ? 'bg-[#0000009d]' : '')}>
-                <div className={'border-b-[0.8vw] border-dashed ' + (underlinedWords.includes(token.replace(/[。，！？,.?!]/g, '').toLowerCase()) ? 'border-b-white' : 'border-b-transparent')}>
+              <div style={{ padding: `${LANGUAGE === 'chinese' ? '2' : '1.2'}vw` }} className={`inline-block flex-col items-center leading-tight text-center ` + (start < currentTime ? 'bg-[#000000c5] ' : '')}>
+                <div className={'border-b-[0.8vw] border-[wavy] ' + (underlinedWords.includes(token.replace(/[。，！？,.?!]/g, '').toLowerCase()) ? ((start < currentTime ? 'border-b-transparent' : 'border-b-black')) : 'border-b-transparent')}>
                   <div className={`text-border`} style={{ fontSize: `${LANGUAGE === 'chinese' ? '8' : '7'}vw` }}>
                     {token}
                   </div>
@@ -176,7 +176,7 @@ const Clip = () => {
               </div>
             ))}
           </div>
-          {currentTranslation && <div className='text-[4vw] text-[#eaeaea] bg-[#0000005b] p-[2vw]'>{currentTranslation}</div>}
+          {currentTranslation && <div className='text-[4vw] text-[#eaeaea] bg-[#0000005b] px-[4vw] py-[2vw]'>{currentTranslation}</div>}
         </div>
         <div className='absolute top-0 left-0 p-[4vw] text-white self-start z-20'>
           <div className='text-[3.5vw] mb-[2vw] flex items-center gap-[1.5vw]'><PaperclipIcon className='inline w-[4vw] h-[4vw]' /> Podcast Episode</div>

@@ -35,3 +35,10 @@ body {
 /* .pulse-animation {
   animation: pulser .3s 1;
 } */
+
+.wavy {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: white;
+  text-underline-offset: 1.2vw;
+}
