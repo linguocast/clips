@@ -31,8 +31,8 @@ dist-ssr
 graphics/input/*
 
 # Allow the specific folder and its contents
-!graphics/input/tomate_21-mi-viaje-por-europa_A
-!graphics/input/tomate_21-mi-viaje-por-europa_A/*
+!graphics/input/EXAMPLE
+!graphics/input/EXAMPLE/*
 
 process/*.mp3
 process/*.mp4

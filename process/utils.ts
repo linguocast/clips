@@ -18,7 +18,7 @@ export const setupBrowser = async (
   frameRate: number,
   platform: string,
 ) => {
-  console.log('Setting up browser...')
+  console.log('Spinning up the browser...')
 
   const browser = await puppeteer.launch({
     headless: false,

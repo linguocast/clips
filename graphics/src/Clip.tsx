@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import logo from './assets/linguoclips.svg'
 import { ArrowRight, PaperclipIcon } from 'lucide-react'
 
@@ -11,8 +11,8 @@ import {
   DICTIONARY,
   PODCAST_LOGO,
   AUDIO,
-  IMAGES
-} from './input/tomate_21-mi-viaje-por-europa_A/data.ts' // <-- replace the folder name here
+  MEDIA
+} from './input/EXAMPLE/data.ts' // <-- replace the folder name here
 
 const MS_CLOSING_LENGTH = 2000
 
@@ -60,16 +60,15 @@ const rawFrameRate = urlParams.get('frame-rate')
 
 const IS_PREVIEW_MODE = (urlParams.get('mode')?.toLowerCase() ?? 'preview') === 'preview' 
 const FRAME_RATE = rawFrameRate ? parseInt(rawFrameRate) : 30
-const MS_PER_FRAME = 1000 / FRAME_RATE // in ms, the longer the more time to capture the frame 
+const MS_PER_FRAME = 1000 / FRAME_RATE // in ms, the longer the more time to capture the frame
 const CLIP_TOTAL_FRAMES = Math.round((CLIP_LENGTH + MS_BREATH + MS_CLOSING_LENGTH) / MS_PER_FRAME)
 
-const backgroundImages = IMAGES.map(({ img, start }, i) => ({
-  img,
+const media = MEDIA.map(({ source, start }, i) => ({
+  source,
   start: (start * 1000) - OFFSET,
-  end: (IMAGES?.[i + 1]?.start ?? 1_000) * 1000 - OFFSET - 1
+  end: (MEDIA?.[i + 1]?.start ?? 1_000) * 1000 - OFFSET - 1,
+  isVideo: ['.mp4', '.mov', '.avi', '.mkv', '.webm'].some((ext) => source.split('?')[0].endsWith(ext))
 }))
-
-console.log(backgroundImages)
 
 const translationsWithoutEnd = TRANSLATION
   .trim()
@@ -89,8 +88,11 @@ const translationsWithoutEnd = TRANSLATION
 
 const underlinedWords = DICTIONARY.flatMap(({ base, also }) => [base.toLowerCase(), ...(also?.map(word => word.toLowerCase()) ?? [])]) 
 
+console.log(media)
+
 const Clip = () => {
   const lastIntervalId = useRef<number | null>(null)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
   const [currentFrame, setCurrentFrame] = useState(0)
   
   const currentTime = currentFrame * (1000 / FRAME_RATE)
@@ -119,33 +121,42 @@ const Clip = () => {
 
   const currentSegment = transcript.find(({ start, end }) => currentTime >= start && currentTime < end)
   const currentTranslation = translations.find(({ start, end }) => currentTime >= start && currentTime < end)?.translation
+  const currentBackground = media.find(({ start, end }) => currentTime >= start && currentTime < end)
+
+  useEffect(() => {
+    if (videoRef.current && currentBackground) {
+      videoRef.current.currentTime = (currentTime - currentBackground.start) / 1000
+    }
+  }, [currentBackground, currentTime])
 
   return (
     <div className='bg-black flex flex-col items-center justify-center h-screen' onClick={advanceFrame} id="start">
       <div className='relative w-full h-full overflow-hidden'>
-        <div className="relative w-full h-full overflow-hidden">
-          {backgroundImages.map(({ start, end, img }, index) => {
-            const isActive = currentTime >= start && currentTime < end;
-            const isNext = index > 0 && currentTime >= backgroundImages[index - 1].start && currentTime < backgroundImages[index - 1].end;
-            
-            return (
-              <div
-                key={index}
-                className="absolute left-0 top-0 w-full h-full"
-                style={{
-                  opacity: isActive ? 1 : 0,
-                  zIndex: isActive ? 10 : 0,
-                  visibility: isActive || isNext ? 'visible' : 'hidden',
-                }}
-              >
+        {currentBackground && (
+          <div className="relative w-full h-full overflow-hidden background-layer">
+            <div
+              className="absolute left-0 top-0 w-full h-full"
+            >
+              {currentBackground.isVideo && (
+                <video
+                  id="video"
+                  ref={videoRef}
+                  className="w-full h-full object-cover object-center"
+                  muted
+                  src={currentBackground.source}
+                  autoPlay={false}
+                >
+                </video>
+              )}
+              {!currentBackground.isVideo && (
                 <img
-                  src={img}
+                  src={currentBackground.source}
                   className="w-full h-full object-cover object-center"
                 />
-              </div>
-            );
-          })}
-        </div>
+              )}
+            </div>
+          </div>
+        )}
         <div className={'absolute left-0 top-0 z-50 bg-[#0000004a] p-4 text-white ' + (IS_PREVIEW_MODE ? 'opacity-1' : 'opacity-0')} id="metadata">
           # frame: <span id="frame">{currentFrame}</span><br/>
           ms/frame: {Math.round(MS_PER_FRAME)}<br/>
