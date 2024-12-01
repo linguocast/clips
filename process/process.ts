@@ -10,7 +10,7 @@ import {
 // 1) Change here the name of the folder that use created in graphics 
 const FOLDER_NAME = 'tomate_21-mi-viaje-por-europa_A' 
 
-// 2) If neccesary Change the name of the audio file that 
+// 2) If neccesary, change the name of the audio file that you used in graphics
 const AUDIO_NAME = 'audio.mp3'
 
 /*
