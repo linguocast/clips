@@ -3,8 +3,14 @@ import * as fsP from 'fs/promises'
 import * as path from 'path'
 import { exec } from 'child_process'
 import puppeteer, { Page } from 'puppeteer'
+import { existsSync, mkdirSync } from 'fs'
 
 export const delay = async (seconds: number) => new Promise(r => setTimeout(r, seconds * 1000))
+
+export const ensureFolderExists = (folderName: string) => {
+  const folderPath = path.join(process.cwd(), folderName)
+  if (!existsSync(folderPath)) mkdirSync(folderPath, { recursive: true })
+}
 
 export const setupBrowser = async (
   width: number,

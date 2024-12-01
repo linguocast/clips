@@ -4,6 +4,7 @@ import {
   createVideoFromScreenshots,
   delay,
   deleteAllFilesInFolder,
+  ensureFolderExists,
   setupBrowser
 } from './utils.ts'
 
@@ -37,10 +38,12 @@ const TOTAL_FRAMES = await page.$eval('#total-frames', (el) => {
   if (!el.textContent) throw new Error('Total frames not found.')
   return parseInt(el.textContent)
 })
+await ensureFolderExists(SCREENSHOTS_FOLDER)
 await deleteAllFilesInFolder(SCREENSHOTS_FOLDER)
 await captureScreenshots(page, TOTAL_FRAMES, SCREENSHOTS_FOLDER)
 await browser.close()
 await createVideoFromScreenshots(FRAME_RATE, SCREENSHOTS_FOLDER, VIDEO_PATH)
 await deleteAllFilesInFolder(SCREENSHOTS_FOLDER)
+await ensureFolderExists('output')
 await addAudioToVideo(VIDEO_PATH, AUDIO_PATH, 'output/' + CLIP_PATH)
 console.log('Finished.')
