@@ -8,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+graphics/node_modules
+process/node_modules
 dist
 dist-ssr
 *.local
@@ -23,5 +25,24 @@ dist-ssr
 *.sln
 *.sw?
 
+graphics/input/*
+!graphics/input/tomate_21-mi-viaje-por-europa_A
+
+# Ignore all video and audio files by default
 *.mp4
+*.mov
+*.avi
+*.mkv
 *.mp3
+*.wav
+*.flac
+
+!graphics/input/tomate_21-mi-viaje-por-europa_A/*.mp4
+!graphics/input/tomate_21-mi-viaje-por-europa_A/*.mp4/*.mov
+!graphics/input/tomate_21-mi-viaje-por-europa_A/*.mp4/*.avi
+!graphics/input/tomate_21-mi-viaje-por-europa_A/*.mp4/*.mkv
+!graphics/input/tomate_21-mi-viaje-por-europa_A/*.mp4/*.mp3
+!graphics/input/tomate_21-mi-viaje-por-europa_A/*.mp4/*.wav
+!graphics/input/tomate_21-mi-viaje-por-europa_A/*.mp4/*.flac
+
+process/screenshots

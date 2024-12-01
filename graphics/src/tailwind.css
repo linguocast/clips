@@ -14,6 +14,10 @@ body {
   font-family: "Rubik", sans-serif;
 }
 
+.text-border {
+  -webkit-text-stroke: 1.6vw black; /* width and color */
+  paint-order: stroke fill;
+}
 
 @keyframes pulser {
   0% {
@@ -25,6 +29,7 @@ body {
     /* opacity: 1; */
   }
 }
+
 
 /* Apply the animation to the element */
 /* .pulse-animation {

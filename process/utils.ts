@@ -1,5 +1,4 @@
 import ffmpeg from 'fluent-ffmpeg'
-import * as fs from 'fs'
 import * as fsP from 'fs/promises'
 import * as path from 'path'
 import { exec } from 'child_process'
@@ -12,7 +11,6 @@ export const setupBrowser = async (
   height: number,
   frameRate: number,
   platform: string,
-  lang: string
 ) => {
   console.log('Setting up browser...')
 
@@ -26,7 +24,7 @@ export const setupBrowser = async (
   })
   
   const page = await browser.newPage()  
-  await page.goto(`http://localhost:5173?mode=build&frame-rate=${frameRate}&platform=${platform}&lang=${lang}`)  
+  await page.goto(`http://localhost:5173?mode=build&frame-rate=${frameRate}&platform=${platform}`)  
   await page.setViewport({ width, height })
   
   return { page, browser }
