@@ -146,10 +146,10 @@ const Clip = () => {
             );
           })}
         </div>
-        <div className={'absolute left-8 top-8 z-50 text-red-600 ' + (IS_PREVIEW_MODE ? 'opacity-1' : 'opacity-0')} id="metadata">
-          #frame: <span id="frame">{currentFrame}</span><br/>
+        <div className={'absolute left-0 top-0 z-50 bg-[#0000004a] p-4 text-white ' + (IS_PREVIEW_MODE ? 'opacity-1' : 'opacity-0')} id="metadata">
+          # frame: <span id="frame">{currentFrame}</span><br/>
           ms/frame: {Math.round(MS_PER_FRAME)}<br/>
-          final frame: <span id="total-frames">{CLIP_TOTAL_FRAMES}</span>
+          Total frames: <span id="total-frames">{CLIP_TOTAL_FRAMES}</span>
         </div>
         <img src={logo} className='absolute right-[4vw] top-[4vw] z-40 w-[25vw] opacity-50' />
         <div className='absolute left-0 right-0 top-0 bottom-0 z-20 p-[4vw] flex flex-col justify-end items-start pb-[26vw]'>
