@@ -14,12 +14,8 @@ const FOLDER_NAME = 'EXAMPLE'
 // 2) If neccesary, change the name of the audio file that you used in graphics
 const AUDIO_NAME = 'audio.mp3'
 
-/*
-  3) Adjust the frame rate. For testing use 1, when no videos
-   you should use 10 (until there are no animations),
-   when using videos, you should use 25 to 30.
-*/
-const FRAME_RATE = 10
+// 3) Adjust the frame rate. For testing use 1, else, you should use 30.
+const FRAME_RATE = 30
 
 // 4) Save the file! That was it here. No need to change anything below...
 const CLIP_PATH = `${FOLDER_NAME}.mp4`

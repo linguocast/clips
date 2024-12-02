@@ -15,6 +15,10 @@ import {
 } from './input/EXAMPLE/data.ts' // <-- replace the folder name here
 
 const MS_CLOSING_LENGTH = 2000
+const IMG_INITIAL_SCALE = .2
+const easingFunction = (x: number): number => {
+  return -(Math.cos(Math.PI * (x < 0 ? 0 : (x > 1 ? 1 : x ))) - 1) / 2
+}
 
 // Pre-processing
 const transcript = TRANSCRIPT
@@ -66,7 +70,7 @@ const CLIP_TOTAL_FRAMES = Math.round((CLIP_LENGTH + MS_BREATH + MS_CLOSING_LENGT
 const media = MEDIA.map(({ source, start }, i) => ({
   source,
   start: (start * 1000) - OFFSET,
-  end: (MEDIA?.[i + 1]?.start ?? 1_000) * 1000 - OFFSET - 1,
+  end: MEDIA?.[i + 1]?.start ? MEDIA?.[i + 1].start * 1000 - OFFSET - 1 : CLIP_LENGTH + MS_BREATH + 1,
   isVideo: ['.mp4', '.mov', '.avi', '.mkv', '.webm'].some((ext) => source.split('?')[0].endsWith(ext))
 }))
 
@@ -88,14 +92,13 @@ const translationsWithoutEnd = TRANSLATION
 
 const underlinedWords = DICTIONARY.flatMap(({ base, also }) => [base.toLowerCase(), ...(also?.map(word => word.toLowerCase()) ?? [])]) 
 
-console.log(media)
-
 const Clip = () => {
   const lastIntervalId = useRef<number | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [currentFrame, setCurrentFrame] = useState(0)
   
   const currentTime = currentFrame * (1000 / FRAME_RATE)
+  const prevFrameTime = (currentFrame - 1) * (1000 / FRAME_RATE)
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -121,7 +124,14 @@ const Clip = () => {
 
   const currentSegment = transcript.find(({ start, end }) => currentTime >= start && currentTime < end)
   const currentTranslation = translations.find(({ start, end }) => currentTime >= start && currentTime < end)?.translation
+  
+  
+  const previousBackground = media.find(({ start, end }) => prevFrameTime >= start && prevFrameTime < end)
   const currentBackground = media.find(({ start, end }) => currentTime >= start && currentTime < end)
+
+  const requestDelay = currentBackground !== previousBackground
+  
+  const scale = currentBackground ? 1 + IMG_INITIAL_SCALE * easingFunction(1 - ((currentTime - currentBackground.start) / (currentBackground?.end - currentBackground.start))) : NaN
 
   useEffect(() => {
     if (videoRef.current && currentBackground) {
@@ -150,6 +160,7 @@ const Clip = () => {
               )}
               {!currentBackground.isVideo && (
                 <img
+                  style={{ transform: `scale(${scale})` }}
                   src={currentBackground.source}
                   className="w-full h-full object-cover object-center"
                 />
@@ -158,9 +169,11 @@ const Clip = () => {
           </div>
         )}
         <div className={'absolute left-0 top-0 z-50 bg-[#0000004a] p-4 text-white ' + (IS_PREVIEW_MODE ? 'opacity-1' : 'opacity-0')} id="metadata">
+          {/* Time (ms): <span id="frame">{Math.ceil(currentTime)}</span><br/> */}
           # frame: <span id="frame">{currentFrame}</span><br/>
-          ms/frame: {Math.round(MS_PER_FRAME)}<br/>
-          Total frames: <span id="total-frames">{CLIP_TOTAL_FRAMES}</span>
+          {/* ms/frame: {Math.round(MS_PER_FRAME)}<br/> */}
+          Total frames: <span id="total-frames">{CLIP_TOTAL_FRAMES}</span><br />
+          Delay frame: <span id="delay">{requestDelay ? 'true' : 'false'}</span>
         </div>
         <img src={logo} className='absolute right-[4vw] top-[4vw] z-40 w-[25vw] opacity-50' />
         <div className='absolute left-0 right-0 top-0 bottom-0 z-20 p-[4vw] flex flex-col justify-end items-start pb-[26vw]'>

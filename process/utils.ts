@@ -65,6 +65,13 @@ export const captureScreenshots = async (
     process.stdout.cursorTo(0)
     process.stdout.write(`Generating frames... ${progressPercentage}%`)
 
+    const delayScreenshotRequested = await page.$eval('#delay', (el) => {
+      if (!el.textContent) throw new Error('Delay not found.')
+      return el.textContent.toLowerCase() === 'true'
+    })
+
+    if (delayScreenshotRequested) await delay(1.5)
+
     await page.screenshot({
       optimizeForSpeed: false,
       // quality: 100, only applicable for jpg

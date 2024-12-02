@@ -42,7 +42,7 @@ process/*.mkv
 process/*.wav
 process/*.flac
 process/screenshots/*
-graphics/output/*
+process/output/*
 flac
 
 process/screenshots

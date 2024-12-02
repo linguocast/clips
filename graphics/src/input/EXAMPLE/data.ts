@@ -95,7 +95,7 @@ export const MEDIA = [
   the also property, that is a list of words 
 */
 export const DICTIONARY: Dictionary[] = [
-  { base: 'comunidad', translation: 'comunity' },
+  { base: 'comunidad', translation: 'community' },
   { base: 'hospedar', also: ['hospedarte', 'hospedo', 'hospedarse'], translation: 'to host' },
   { base: 'conmigo', translation: 'with me' },
   { base: 'definir', also: ['definirla'], translation: 'to define' },
