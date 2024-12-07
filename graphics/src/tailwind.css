@@ -40,5 +40,12 @@ body {
   text-decoration-line: underline;
   text-decoration-style: wavy;
   text-decoration-color: white;
-  text-underline-offset: 1.2vw;
+  text-underline-offset: 1vw;
+}
+
+.text-transparent {
+  background: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
+  -webkit-mask-image: linear-gradient(black, black);
+  -webkit-mask-clip: text;
+  -webkit-text-fill-color: transparent;
 }

@@ -28,11 +28,11 @@ dist-ssr
 
 
 # Ignore everything in graphics/input
-graphics/input/*
+graphics/src/input/*
 
 # Allow the specific folder and its contents
-!graphics/input/EXAMPLE
-!graphics/input/EXAMPLE/*
+!graphics/src/input/EXAMPLE
+!graphics/src/input/EXAMPLE/*
 
 process/*.mp3
 process/*.mp4

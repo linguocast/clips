@@ -9,7 +9,7 @@ import {
 } from './utils.ts'
 
 // 1) Change here the name of the folder that use created in graphics 
-const FOLDER_NAME = 'EXAMPLE'
+const FOLDER_NAME = 'CN_dapeng_ganggang_A'
 
 // 2) If neccesary, change the name of the audio file that you used in graphics
 const AUDIO_NAME = 'audio.mp3'

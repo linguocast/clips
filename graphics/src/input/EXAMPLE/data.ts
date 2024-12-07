@@ -6,14 +6,17 @@ export const LANGUAGE: string = 'spanish'
 // 2) Adjust the name of the podcast, and be consistent
 export const PODCAST_NAME = 'Tomate 🍅'
 
-// 3) Copy the cover image of the podcast and paste it in this folder, then adjust the name if necessary.
+// 3) Import the rounded flag from the assets/flag folder.
+import FLAG from '../../assets/flags/spanish.svg'
+
+// 4) Copy the cover image of the podcast and paste it in this folder, then adjust the name if necessary.
 import PODCAST_LOGO from './logo.jpg'
 
-// 4) Adjust the episode's title, and be consistent from here on.
+// 5) Adjust the episode's title, and be consistent from here on.
 export const EPISODE_NAME = '#21 Mi viaje por Europa'
 
 /*
-  5) Copy the desired part of the transcript in the transcript.txt file.
+  6) Copy the desired part of the transcript in the transcript.txt file.
   Notice the format (and how elements  are separated by a space or tab):
 
   [START_IN_SEC] [END_IN_SEC] [TOKEN] [PRONUNCIATION]
@@ -39,7 +42,7 @@ export const EPISODE_NAME = '#21 Mi viaje por Europa'
 import TRANSCRIPT from './transcript.txt?raw'
 
 /*
-  6) This are the translations that will show below the target language text.
+  7) This are the translations that will show below the target language text.
   For each sentence of the transcript (the ones separated by 2 returns),
   translate the text and copy it with the format
   
@@ -55,7 +58,7 @@ import TRANSCRIPT from './transcript.txt?raw'
 import TRANSLATION from './translation.txt?raw'
 
 /*
-  7) Select the media (images or videos) from the web.
+  8) Select the media (images or videos) from the web.
 
   Platforms to look for free resources:
     https://unsplash.com/
@@ -78,7 +81,7 @@ import image3 from './media/home.jpg'
 import image4 from './media/surfing.jpg'
 
 /*
-  7) Then, set their start time
+  9) Then, set their start time
   I recommend to set the same start as the translations so it does not change in the middle of a sentence.
 */
 export const MEDIA = [
@@ -90,7 +93,7 @@ export const MEDIA = [
 ]
 
 /*
-  8) Here it is the dictionary that will show at the end of the clip, and the words will show underlined.
+  10) Here it is the dictionary that will show at the end of the clip, and the words will show underlined.
   the base is the word that will show, you can add pronunciation, but probably only fmake sense for Chinese
   the also property, that is a list of words 
 */
@@ -103,14 +106,14 @@ export const DICTIONARY: Dictionary[] = [
 ]
 
 /*
-  9) this is the audio file of the clip, extracted from the original podcast audio file.
+  11) this is the audio file of the clip, extracted from the original podcast audio file.
   For now you need to generate it. I recommend the online tool [Mp3cut](https://mp3cut.net/).
   save the audio file in the folder and adjust the name if neccesary.
 */
 import AUDIO from './audio.mp3'
 
-// 10) Save the file! Congrats you made it this far!
-export { PODCAST_LOGO, TRANSCRIPT, TRANSLATION, AUDIO }
+// 12) Save the file! Congrats you made it this far!
+export { PODCAST_LOGO, TRANSCRIPT, TRANSLATION, AUDIO, FLAG }
 
 
 

@@ -3,4 +3,5 @@ export interface Dictionary {
   pronunciation?: string
   also?: string[]
   translation: string
+  // image: string
 }

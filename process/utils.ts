@@ -123,7 +123,7 @@ export const addAudioToVideo = (
   console.log('Adding audio...')
 
   // fallback to process because ffmpeg-fluent had an unexpected bug
-  const command = `ffmpeg -i ${videoPath} -i ${audioPath} -c:v copy -c:a aac -y ${outputPath}`;
+  const command = `ffmpeg -i "${videoPath}" -i "${audioPath}" -c:v copy -c:a aac -y "${outputPath}"`;
 
 
   return new Promise((resolve, reject) => {
