@@ -4,6 +4,7 @@ import { PaperclipIcon } from 'lucide-react'
 
 import {
   LANGUAGE,
+  VARIANT,
   TRANSCRIPT,
   TRANSLATION,
   PODCAST_NAME,
@@ -12,10 +13,12 @@ import {
   PODCAST_LOGO,
   AUDIO,
   MEDIA,
-  FLAG
-} from './input/CN_dapeng_ganggang_A/data.ts' // <-- replace the folder name here
+  FLAG,
+  GENERAL_OFFSET_MS
+} from './input/EXAMPLE/data.ts' // <-- replace the folder name here
 import { animate, popAnimation } from './animations.tsx'
 import LoadingRing from './ui/loading-ring.ui.tsx'
+import * as OpenCC from 'opencc-js'
 
 const MS_CLOSING_LENGTH = 3000
 const IMG_INITIAL_SCALE = .2
@@ -44,7 +47,7 @@ const transcript = TRANSCRIPT
     }
   })
 
-const OFFSET =  transcript[0].start // the start of the first token
+const OFFSET =  transcript[0].start - GENERAL_OFFSET_MS // the start of the first token
 const CLIP_LENGTH = transcript[transcript.length - 1].end - OFFSET // the first number is the end time of the last token
 const MS_BREATH = 1000
 
@@ -70,8 +73,10 @@ const FRAME_RATE = rawFrameRate ? parseInt(rawFrameRate) : 30
 const MS_PER_FRAME = 1000 / FRAME_RATE // in ms, the longer the more time to capture the frame
 const CLIP_TOTAL_FRAMES = Math.round((CLIP_LENGTH + MS_BREATH + MS_CLOSING_LENGTH) / MS_PER_FRAME)
 
-const media = MEDIA.map(({ source, start }, i) => ({
+const media = MEDIA.map(({ source, start, position, startAt }, i) => ({
   source,
+  startAt: startAt ?? 0,
+  position: position ?? 50,
   start: (start * 1000) - OFFSET,
   end: MEDIA?.[i + 1]?.start ? MEDIA?.[i + 1].start * 1000 - OFFSET - 1 : CLIP_LENGTH + MS_BREATH + 1000,
   isVideo: ['.mp4', '.mov', '.avi', '.mkv', '.webm'].some((ext) => source.split('?')[0].endsWith(ext))
@@ -94,34 +99,48 @@ const translationsWithoutEnd = TRANSLATION
   .map(({ start, ...rest }, i) => {
     return { start, end: (translationsWithoutEnd?.[i + 1]?.start ?? 1_000_000), ...rest }
   })
-
+  
 const underlinedWords = DICTIONARY.flatMap(({ base, also }) => [base.toLowerCase(), ...(also?.map(word => word.toLowerCase()) ?? [])]) 
+
+const converter = OpenCC.Converter({
+  from: VARIANT === 'simplified' ? 'cn' : 'tw',
+  to: VARIANT === 'simplified' ? 'tw' : 'cn'
+})
+
+
+transcript[0].start = 0
+translations[0].start = 0
+media[0].start = 0
+
+const INITIAL_FRAME = 400
+
+const getTimeFromFrame = (frame: number) => frame * (1000 / FRAME_RATE)
 
 const Clip = () => {
   const lastIntervalId = useRef<number | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
-  const [currentFrame, setCurrentFrame] = useState(0)
+  const [currentFrame, setCurrentFrame] = useState(INITIAL_FRAME)
   
-  const currentTime = currentFrame * (1000 / FRAME_RATE)
+  const currentTime = getTimeFromFrame(currentFrame)
   const prevFrameTime = (currentFrame - 1) * (1000 / FRAME_RATE)
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const playAudio = async () => {
+  const playAudio = async (initialTimeMs = 0) => {
     if (audioRef.current) {
-      audioRef.current.currentTime = 0
+      audioRef.current.currentTime = initialTimeMs / 1000
       await audioRef.current.play()
     }
   }
 
   const advanceFrame = () => {
     if (IS_PREVIEW_MODE) {
-      setCurrentFrame(0)
+      setCurrentFrame(INITIAL_FRAME)
       if (lastIntervalId.current) clearInterval(lastIntervalId.current)
       lastIntervalId.current = setInterval(() => {
         setCurrentFrame(f => f + 1)
       }, MS_PER_FRAME)
-      playAudio()
+      playAudio(getTimeFromFrame(INITIAL_FRAME))
     } else {
       setCurrentFrame(f => f + 1)
     }
@@ -140,7 +159,7 @@ const Clip = () => {
 
   useEffect(() => {
     if (videoRef.current && currentBackground) {
-      videoRef.current.currentTime = (currentTime - currentBackground.start) / 1000
+      videoRef.current.currentTime = (currentTime - currentBackground.start) / 1000 + currentBackground.startAt
     }
   }, [currentBackground, currentTime])
 
@@ -156,7 +175,8 @@ const Clip = () => {
                 <video
                   id="video"
                   ref={videoRef}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: currentBackground.position + '%' }}
                   muted
                   src={currentBackground.source}
                   autoPlay={false}
@@ -200,7 +220,16 @@ const Clip = () => {
               </div>
             ))}
           </div>
-          {currentTranslation && <div className='text-[4vw] text-[#eaeaea] text-center bg-[#0000005b] px-[4vw] py-[2vw] rounded-[1vw]'>{currentTranslation}</div>}
+          {currentTranslation && (
+            <div className='text-[4vw] text-[#eaeaea] text-center bg-[#0000005b] px-[4vw] py-[2vw] rounded-[1vw]'>
+              {LANGUAGE === 'chinese' && (
+                <div className='text-[6vw]'>
+                  {converter(currentSegment?.tokens.map(({ token }) => token).join('') ?? '')}
+                </div>
+              )}
+              {currentTranslation}
+            </div>
+          )}
         </div>
         <div className='absolute top-0 left-0 p-[4vw] text-white self-start z-20'>
           <div className='text-[3.5vw] mb-[3vw] flex items-center gap-[1.5vw]'>
@@ -241,7 +270,7 @@ const Clip = () => {
                 Challenging Words
               </div>
               <div
-                className='grid grid-cols-2 items-center gap-[4vw]'
+                className='grid grid-cols-2 items-center gap-[4vw] items-stretch'
                 style={{
                   transform: `scale(${popAnimation(CLIP_LENGTH + MS_BREATH, currentTime, 3, 250)})`,
                   opacity: animate(0, 1, CLIP_LENGTH + MS_BREATH, currentTime, 250)
@@ -250,7 +279,7 @@ const Clip = () => {
                 {DICTIONARY.map(({ base, pronunciation, translation }) => {
                   return (
                     <>
-                      <div className='p-[4vw] flex flex-col text-center justify-start items-center bg-[#3f3f3f] rounded-[.6vw] overflow-hidden'>
+                      <div className='p-[4vw] flex flex-col text-center justify-start bg-[#3f3f3f] rounded-[.6vw] overflow-hidden'>
                         <div className={`item-end font-bold text-[tomato] text-border `} style={{ fontSize: `${LANGUAGE === 'chinese' ? '8' : '6'}vw` }}>
                           {base}
                         </div>

@@ -5,3 +5,13 @@ export interface Dictionary {
   translation: string
   // image: string
 }
+
+export interface Media {
+  source: string
+  start: number
+  startAt?: number
+  position?: number
+}
+
+export type Language = 'chinese' | 'spanish' | 'italian'
+export type Variant = 'traditional' | 'simplified' | null

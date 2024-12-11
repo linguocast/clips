@@ -1,7 +1,11 @@
-import { Dictionary } from '../../types'
+import { Dictionary, Language, Variant } from '../../types'
 
-// 1) Adjust the language. This will affect the styles.
-export const LANGUAGE: string = 'spanish'
+/*
+  1) Adjust the language and variant. This will affect the styles.
+  Use null for variant is does not apply.
+*/
+export const LANGUAGE: Language = 'spanish'
+export const VARIANT: Variant = null
 
 // 2) Adjust the name of the podcast, and be consistent
 export const PODCAST_NAME = 'Tomate 🍅'
@@ -66,7 +70,7 @@ import TRANSLATION from './translation.txt?raw'
     https://www.videvo.net/
     https://www.freepik.com
     https://www.pixelbay.com
-    Mixkit - Awesome free assets for your next video project
+    https://mixkit.co/
     https://mixkit.co
     https://dareful.com
     https://coverr.co
@@ -112,7 +116,10 @@ export const DICTIONARY: Dictionary[] = [
 */
 import AUDIO from './audio.mp3'
 
-// 12) Save the file! Congrats you made it this far!
+// 12) A general offset to adjust the transcript, translations and video with the audio.
+export const GENERAL_OFFSET_MS = 0
+
+// 13) Save the file! Congrats you made it this far!
 export { PODCAST_LOGO, TRANSCRIPT, TRANSLATION, AUDIO, FLAG }
 
 
