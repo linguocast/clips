@@ -112,7 +112,7 @@ transcript[0].start = 0
 translations[0].start = 0
 media[0].start = 0
 
-const INITIAL_FRAME = 400
+const INITIAL_FRAME = 0
 
 const getTimeFromFrame = (frame: number) => frame * (1000 / FRAME_RATE)
 
